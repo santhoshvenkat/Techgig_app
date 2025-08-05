@@ -1,0 +1,417 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+*/
+
+:root {
+  --alarm-bg: #a0c4ff; /* Pastel Blue */
+  --timer-bg: #caffbf; /* Pastel Green */
+  --stopwatch-bg: #fdffb6; /* Pastel Yellow */
+  --weather-bg: #bdb2ff; /* Pastel Purple */
+  
+  --text-color: #333;
+  --bg-color: #f0f0f0;
+  --subtle-text: #555;
+  --time-text: #2a2a2a;
+  
+  --card-bg: rgba(255, 255, 255, 0.4);
+  --card-shadow: rgba(31, 38, 135, 0.2);
+  --card-border: rgba(255, 255, 255, 0.2);
+  
+  --input-bg: #fff;
+  --input-border: rgba(0,0,0,0.2);
+  
+  --btn-primary-bg: #4C82F7;
+  --btn-primary-text: white;
+  --btn-secondary-bg: #607d8b;
+  --btn-success-bg: #28a745;
+  --btn-danger-bg: #dc3545;
+  --btn-warning-bg: #ff9800;
+  --btn-disabled-bg: #ccc;
+  --btn-disabled-text: #666;
+  
+  --laps-border: rgba(0,0,0,0.1);
+  --shadow-color: rgba(0,0,0,0.15);
+  
+  color-scheme: light;
+}
+
+body.dark-mode {
+  --alarm-bg: #1e3a5f;
+  --timer-bg: #1f4a2d;
+  --stopwatch-bg: #574b00;
+  --weather-bg: #3a2e6f;
+  
+  --text-color: #e0e0e0;
+  --bg-color: #121212;
+  --subtle-text: #aaa;
+  --time-text: #f5f5f5;
+  
+  --card-bg: rgba(255, 255, 255, 0.08);
+  --card-shadow: rgba(0, 0, 0, 0.4);
+  --card-border: rgba(255, 255, 255, 0.1);
+  
+  --input-bg: #2a2a2a;
+  --input-border: rgba(255,255,255,0.3);
+  
+  --btn-primary-bg: #5a91f7;
+  --btn-primary-text: #121212;
+  --btn-secondary-bg: #5a5a5a;
+  --btn-success-bg: #34c759;
+  --btn-danger-bg: #ff453a;
+  --btn-warning-bg: #ff9f0a;
+  --btn-disabled-bg: #444;
+  --btn-disabled-text: #999;
+  
+  --laps-border: rgba(255,255,255,0.15);
+  --shadow-color: rgba(0,0,0,0.4);
+
+  color-scheme: dark;
+}
+
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    overflow: hidden; /* Prevent scrolling */
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#app-container {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-areas: "main";
+}
+
+.view {
+    grid-area: main;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-color);
+    text-align: center;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1) translateY(0);
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.view.hidden {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    pointer-events: none;
+    transform: scale(0.95) translateY(10px);
+}
+
+#alarm { background-color: var(--alarm-bg); }
+#timer { background-color: var(--timer-bg); }
+#stopwatch { background-color: var(--stopwatch-bg); }
+#weather { background-color: var(--weather-bg); }
+
+h1 {
+    font-size: clamp(2rem, 8vw, 2.5rem);
+    margin: 0;
+    font-weight: 600;
+}
+
+p {
+    font-size: clamp(1rem, 5vw, 1.5rem);
+    color: var(--subtle-text);
+}
+
+.time-display {
+    font-size: clamp(2.5rem, 15vw, 4rem);
+    font-weight: 300;
+    font-family: 'SF Mono', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+    color: var(--time-text);
+}
+
+#currentTime {
+    font-size: clamp(1.2rem, 5vw, 1.8rem);
+    font-weight: 500;
+}
+
+/* --- Alarm Clock Styles --- */
+.alarm-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.alarm-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 90%;
+    max-width: 400px;
+}
+
+@media (min-width: 400px) {
+    .alarm-controls {
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+}
+
+#alarmTime {
+    padding: 0.75rem;
+    font-size: 1.2rem;
+    border: 2px solid var(--input-border);
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    background-color: var(--btn-primary-bg);
+    color: var(--btn-primary-text);
+    width: 100%;
+    min-width: 120px;
+}
+
+.btn:disabled {
+    background-color: var(--btn-disabled-bg);
+    cursor: not-allowed;
+    color: var(--btn-disabled-text);
+    transform: none;
+    box-shadow: none;
+}
+
+.btn:not(:disabled):hover, .btn:not(:disabled):focus {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+#clearAlarmBtn { background-color: var(--btn-danger-bg); }
+
+#alarmStatus {
+    font-size: 1.1rem;
+    min-height: 1.5rem; /* Reserve space */
+    color: var(--text-color);
+    margin: 0;
+    font-weight: 500;
+}
+
+@keyframes alarm-flash {
+    0% { background-color: var(--alarm-bg); }
+    50% { background-color: #ff8a80; }
+    100% { background-color: var(--alarm-bg); }
+}
+
+.view.alarming { animation: alarm-flash 1s infinite; }
+
+
+/* --- Timer Styles --- */
+.timer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    width: 90%;
+    max-width: 450px;
+}
+
+#timerDisplay { margin-bottom: 0.5rem; }
+
+.timer-inputs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.timer-inputs input {
+    width: 4rem;
+    padding: 0.5rem;
+    font-size: 1.8rem;
+    text-align: center;
+    border: 2px solid var(--input-border);
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.timer-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+@media (min-width: 400px) {
+    .timer-controls {
+        flex-direction: row;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+}
+
+#pauseTimerBtn { background-color: var(--btn-warning-bg); }
+#resetTimerBtn { background-color: var(--btn-secondary-bg); }
+
+@keyframes timer-flash {
+    0% { background-color: var(--timer-bg); }
+    50% { background-color: #ff8a80; }
+    100% { background-color: var(--timer-bg); }
+}
+
+.view.timer-finished { animation: timer-flash 1s infinite; }
+
+/* --- Stopwatch Styles --- */
+.stopwatch-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    width: 90%;
+    height: 90%;
+    max-width: 500px;
+}
+
+#stopwatchDisplay .milliseconds {
+    font-size: clamp(1.5rem, 9vw, 2.5rem);
+    color: var(--subtle-text);
+    font-weight: 300;
+}
+
+.stopwatch-controls {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    gap: 1rem;
+}
+
+.stopwatch-controls .btn { width: 45%; max-width: 150px; }
+#stopwatchPrimaryBtn { background-color: var(--btn-success-bg); }
+#stopwatchPrimaryBtn.running { background-color: var(--btn-danger-bg); }
+#stopwatchSecondaryBtn { background-color: var(--btn-secondary-bg); }
+
+.laps-container {
+    width: 100%;
+    flex-grow: 1;
+    overflow-y: auto;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    padding: 0.5rem;
+    box-sizing: border-box;
+}
+
+#stopwatchLaps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-family: 'SF Mono', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+}
+
+#stopwatchLaps li {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--laps-border);
+}
+
+#stopwatchLaps li:last-child { border-bottom: none; }
+
+
+/* --- Weather Styles --- */
+.weather-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+#weatherStatus {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.weather-card {
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 8px 32px 0 var(--card-shadow);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid var(--card-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    width: 90%;
+    max-width: 400px;
+}
+
+#weatherCity { margin: 0; font-size: 1.8rem; font-weight: 600; color: var(--text-color); }
+#weatherIcon { width: 100px; height: 100px; }
+#weatherTemp { margin: 0; font-size: 3rem; font-weight: 700; color: var(--time-text); }
+#weatherDesc { margin: 0; font-size: 1.2rem; text-transform: capitalize; color: var(--subtle-text); }
+
+/* --- Theme Toggle Button --- */
+.theme-toggle-btn {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  background: var(--card-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  padding: 10px;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.theme-toggle-btn svg {
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.3s, transform 0.3s;
+  color: var(--text-color);
+  position: absolute;
+}
+
+.theme-toggle-btn .sun { display: none; }
+body.dark-mode .theme-toggle-btn .moon { display: none; }
+body.dark-mode .theme-toggle-btn .sun { display: block; }

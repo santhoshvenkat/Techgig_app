@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Orientation App</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#a0c4ff">
+    <link rel="apple-touch-icon" href="icon.png">
+    <script type="module" src="index.tsx"></script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <main id="app-container">
+        <section id="alarm" class="view">
+            <div class="alarm-content">
+                <div id="currentTime" class="time-display"></div>
+                <h1>Alarm Clock</h1>
+                <div class="alarm-controls">
+                    <input type="time" id="alarmTime" aria-label="Alarm time">
+                    <button id="setAlarmBtn" class="btn">Set Alarm</button>
+                    <button id="clearAlarmBtn" class="btn" disabled>Clear Alarm</button>
+                </div>
+                <p id="alarmStatus"></p>
+                <audio id="alarmSound" src="https://assets.codepen.io/285131/default_alarm.mp3" preload="auto"></audio>
+            </div>
+        </section>
+        <section id="timer" class="view hidden">
+            <div class="timer-content">
+                <h1>Timer</h1>
+                <div id="timerDisplay" class="time-display">00:00</div>
+                <div class="timer-inputs">
+                    <input type="number" id="timerMinutes" placeholder="MM" min="0" max="99" aria-label="Minutes">
+                    <span>:</span>
+                    <input type="number" id="timerSeconds" placeholder="SS" min="0" max="59" aria-label="Seconds">
+                </div>
+                <div class="timer-controls">
+                    <button id="startTimerBtn" class="btn">Start</button>
+                    <button id="pauseTimerBtn" class="btn" disabled>Pause</button>
+                    <button id="resetTimerBtn" class="btn" disabled>Reset</button>
+                </div>
+                <audio id="timerSound" src="https://assets.codepen.io/285131/default_alarm.mp3" preload="auto"></audio>
+            </div>
+        </section>
+        <section id="stopwatch" class="view hidden">
+            <div class="stopwatch-content">
+                <h1>Stopwatch</h1>
+                <div id="stopwatchDisplay" class="time-display">00:00:00<span class="milliseconds">.00</span></div>
+                <div class="stopwatch-controls">
+                    <button id="stopwatchSecondaryBtn" class="btn" disabled>Reset</button>
+                    <button id="stopwatchPrimaryBtn" class="btn">Start</button>
+                </div>
+                <div class="laps-container">
+                    <ol id="stopwatchLaps"></ol>
+                </div>
+            </div>
+        </section>
+        <section id="weather" class="view hidden">
+             <div class="weather-content">
+                <h1>Weather</h1>
+                <p id="weatherStatus">Rotate to landscape to see the weather.</p>
+                <div id="weatherCard" class="weather-card hidden">
+                    <h2 id="weatherCity"></h2>
+                    <img id="weatherIcon" src="" alt="Weather icon">
+                    <p id="weatherTemp"></p>
+                    <p id="weatherDesc"></p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">
+        <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </button>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "name": "techgig_Orientation App",
+  "description": "A responsive app that displays different views based on device orientation, including an alarm, timer, stopwatch, and weather.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "prompt": ""
+}
